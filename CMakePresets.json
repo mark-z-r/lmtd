@@ -1,0 +1,14 @@
+{
+  "version": 11,
+  "configurePresets": [{
+    "name": "dev",
+    "generator": "Ninja",
+    "binaryDir": "build/dev"
+  }],
+  "buildPresets": [{
+    "name": "dev",
+    "configurePreset": "dev"
+  }]
+}
+  
+    
