@@ -9,4 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS FALSE)
 set(CMAKE_CXX_MODULE_STD ON)
 
-project(smth CXX)
+project(lmtd 
+  LANGUAGES CXX C)
+
+add_subdirectory(bgd)
