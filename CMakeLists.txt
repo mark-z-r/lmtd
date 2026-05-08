@@ -12,4 +12,5 @@ set(CMAKE_CXX_MODULE_STD ON)
 project(lmtd 
   LANGUAGES CXX C)
 
+add_subdirectory(protocols)
 add_subdirectory(bgd)

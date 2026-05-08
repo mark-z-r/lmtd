@@ -1,11 +1,13 @@
 #include <wayland-client.h>
 #include <string.h>
 #include <stdlib.h>
-#include "xdg-shell-client-protocol.h"
+#include "bgd/xdg-shell-client-protocol.h"
+#include "protocols/wlr-layer-shell-client-protocol.h"
 #define _GNU_SOURCE
 #include <sys/mman.h>
 #include <unistd.h>
 #include <fcntl.h>
+
 struct bgd_state {
   struct wl_display *disp;
   struct wl_registry *reg;
