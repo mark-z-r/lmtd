@@ -13,10 +13,13 @@ struct bgd_state {
   struct wl_registry *reg;
   struct wl_compositor *comp;
   struct wl_shm *shm;
-  struct xdg_wm_base *wm;
   struct wl_surface *wl_surf;
+  /*
+  struct xdg_wm_base *wm;
   struct xdg_surface *xdg_surf;
-  struct xdg_toplevel *top;  
+  struct xdg_toplevel *top;  */
+  struct zwlr_layer_shell_v1 *layer;
+  struct zwlr_layer_surface_v1 *layer_surf;
 };
 
 static void buf_release(void *data, struct wl_buffer *buf){
@@ -37,7 +40,7 @@ static struct wl_buffer * draw_image(struct bgd_state *state){
   wl_buffer_add_listener( wl_buf, &buf_listener, NULL);
   return wl_buf;
 }
-
+/*
 static void xdg_surf_conf(void * data, struct xdg_surface *surf, uint32_t serial){
   struct bgd_state *state = data;
   xdg_surface_ack_configure(surf, serial);
@@ -58,7 +61,7 @@ static void wm_ping(void *data, struct xdg_wm_base *wm, uint32_t serial ){
 
 static const struct xdg_wm_base_listener wm_listener = {
   .ping  = wm_ping,
-};
+};*/
 
 static void registry_handle_global(void *data, struct wl_registry *registry,
                                    uint32_t name, const char *interface,
@@ -68,9 +71,11 @@ static void registry_handle_global(void *data, struct wl_registry *registry,
     state->comp = wl_registry_bind(registry, name, &wl_compositor_interface, 4);
   } else if (strcmp(interface, wl_shm_interface.name) == 0){
     state->shm = wl_registry_bind(registry, name, &wl_shm_interface, 1);
-  } else if (strcmp(interface, xdg_wm_base_interface.name) == 0) {
+  } /*else if (strcmp(interface, xdg_wm_base_interface.name) == 0) {
     state->wm = wl_registry_bind(registry,name, &xdg_wm_base_interface,1);
     xdg_wm_base_add_listener(state->wm,&wm_listener,state);
+  }*/else if (strcmp(interface, zwlr_layer_shell_v1_interface.name)==0){
+    state->layer = wl_registry_bind(registry, name, &zwlr_layer_shell_v1_interface,1); 
   }
 }
 
@@ -80,6 +85,23 @@ static void reg_global_remove(
   // do nothing
 }
 
+static void layer_surf_conf(void *data, struct zwlr_layer_surface_v1 *surf, uint32_t serial, uint32_t width, uint32_t height){
+  struct bgd_state *state = data;
+  zwlr_layer_surface_v1_ack_configure(surf, serial);
+
+  struct wl_buffer *buf = draw_image(state);
+  wl_surface_attach(state->wl_surf,buf,0,0);
+  wl_surface_commit(state->wl_surf); 
+}
+
+static void layer_surf_close(void *data, struct zwlr_layer_surface_v1 *surf){
+  // TODO
+}
+
+static const struct zwlr_layer_surface_v1_listener layer_surf_listener={
+  .configure = layer_surf_conf,
+  .closed = layer_surf_close,
+};
 
 static const struct wl_registry_listener reg_listener = {
     .global = registry_handle_global,
@@ -94,10 +116,15 @@ int main(int argc, char *argv[]) {
   wl_display_roundtrip(state.disp);
 
   state.wl_surf = wl_compositor_create_surface(state.comp);
-  state.xdg_surf = xdg_wm_base_get_xdg_surface(state.wm, state.wl_surf);
+ /* state.xdg_surf = xdg_wm_base_get_xdg_surface(state.wm, state.wl_surf);
   xdg_surface_add_listener(state.xdg_surf, &xdg_surf_listener, &state);
   state.top = xdg_surface_get_toplevel(state.xdg_surf);
-  xdg_toplevel_set_title(state.top, "bgd");
+  xdg_toplevel_set_title(state.top, "bgd");*/
+  state.layer_surf = zwlr_layer_shell_v1_get_layer_surface(state.layer, state.wl_surf, NULL, 0, "background");
+  zwlr_layer_surface_v1_set_anchor(state.layer_surf, ZWLR_LAYER_SURFACE_V1_ANCHOR_TOP | ZWLR_LAYER_SURFACE_V1_ANCHOR_LEFT | ZWLR_LAYER_SURFACE_V1_ANCHOR_BOTTOM | ZWLR_LAYER_SURFACE_V1_ANCHOR_RIGHT);
+  zwlr_layer_surface_v1_set_exclusive_zone(state.layer_surf, -1);
+  zwlr_layer_surface_v1_set_size(state.layer_surf, 0,0);
+  zwlr_layer_surface_v1_add_listener(state.layer_surf, &layer_surf_listener, &state);
   wl_surface_commit(state.wl_surf);
   while(wl_display_dispatch(state.disp)){
   }
