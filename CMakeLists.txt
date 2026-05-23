@@ -14,3 +14,5 @@ project(lmtd
 
 add_subdirectory(protocols)
 add_subdirectory(bgd)
+add_subdirectory(wckd)
+add_subdirectory(fontc)
