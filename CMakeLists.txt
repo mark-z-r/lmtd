@@ -1,7 +1,17 @@
-cmake_minimum_required(VERSION 4.3)
+cmake_minimum_required(VERSION 4.2) 
 
-if(CMAKE_VERSION VERSION_EQUAL 4.3)
-set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "451f2fe2-a8a2-47c3-bc32-94786d8fc91b")
+if(CMAKE_VERSION VERSION_EQUAL 4.2)
+  set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "d0edc3af-4c50-42ea-a356-e2862fe7a444")
+elseif(CMAKE_VERSION VERSION_EQUAL 4.3 OR CMAKE_VERSION VERSION_EQUAL 4.4)
+  set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "451f2fe2-a8a2-47c3-bc32-94786d8fc91b")
+endif()
+
+
+if(NOT CMAKE_BUILD_TYPE)
+  message(WARNING "No build type specified, assuming 'Debug' build")
+  set(CACHE{CMAKE_BUILD_TYPE} VALUE "Debug")
+  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS
+     "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 endif()
 
 set(CMAKE_CXX_STANDARD 26)
@@ -9,10 +19,4 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS FALSE)
 set(CMAKE_CXX_MODULE_STD ON)
 
-project(lmtd 
-  LANGUAGES CXX C)
-
-add_subdirectory(protocols)
-add_subdirectory(bgd)
-add_subdirectory(wckd)
-add_subdirectory(fontc)
+project(lmtd CXX)
