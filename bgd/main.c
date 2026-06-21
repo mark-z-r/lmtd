@@ -6,6 +6,7 @@
 #include <sys/mman.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <sys/stat.h>
 
 struct bgd_state {
   struct wl_display *disp;
@@ -25,13 +26,14 @@ static const struct wl_buffer_listener buf_listener = {
   .release = buf_release,
 };
 
-static struct wl_buffer * draw_image(struct bgd_state *state){
-  int memfd = open("/home/mark/.cache/bgd/bg-d.xrgb8888",O_RDWR);
-  int32_t bufsize = 4 * 800 * 480;
-  ftruncate(memfd, bufsize);
+static int get_image(uint32_t height, uint32_t width){
+  open("/home/mark/.cache/bgd/bg-d.xrgb8888",O_RDWR);
+}
+
+static struct wl_buffer * share_image(struct bgd_state *state){
+  int img_fd = get_image(800, 480);
   struct wl_shm_pool *pool = wl_shm_create_pool(state->shm, memfd, bufsize);
   struct wl_buffer *wl_buf = wl_shm_pool_create_buffer(pool,0,800,480,800*4,WL_SHM_FORMAT_XRGB8888);
-  void *buf = mmap(NULL, bufsize, PROT_READ | PROT_WRITE, MAP_SHARED, memfd, 0);
   wl_buffer_add_listener( wl_buf, &buf_listener, NULL);
   return wl_buf;
 }
