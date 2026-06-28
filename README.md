@@ -3,13 +3,7 @@
 LMTD (pronounced 'limited' but with the vowels shortened) is a desktop
 enviroment. Its goal is simple: low resource usage. 
 
-It achieves this with seperating each feature into a seperate program.
-on the surface, it may seem like this will make stuff take more memory and run slower.
-but that is not the case. by keeping stuff seperate, each part can be optimized more.
-'Do one thing really well'.
-
-
-I came up with the name as a shortening of limited, but LMTD is not an
+I came up with the name as a shortening of limited, as in limited memory, but LMTD is not an
 abbrevation, it is just a name.
 
 ## Choices
@@ -20,6 +14,5 @@ abbrevation, it is just a name.
 
 ## TODOs
 - [ ] make a compositor
-- [ ] make a background daemon 
-    - [x] works (displays an image)
-    - [ ] not jank 
+- [ ] make a shell
+- [ ] make a virtual terminal 

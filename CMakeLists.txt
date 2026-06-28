@@ -20,3 +20,5 @@ set(CMAKE_CXX_EXTENSIONS FALSE)
 set(CMAKE_CXX_MODULE_STD ON)
 
 project(lmtd LANGUAGES CXX)
+
+add_subdirectory(inate)
