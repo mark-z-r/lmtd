@@ -6,6 +6,7 @@ elseif(CMAKE_VERSION VERSION_EQUAL 4.3 OR CMAKE_VERSION VERSION_EQUAL 4.4)
   set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "451f2fe2-a8a2-47c3-bc32-94786d8fc91b")
 endif()
 
+include(CMakeOptions.txt)
 
 if(NOT CMAKE_BUILD_TYPE)
   message(WARNING "No build type specified, assuming 'Debug' build")
