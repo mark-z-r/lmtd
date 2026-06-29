@@ -1,0 +1,12 @@
+function(config arg_NAME arg_TYPE arg_DEFAULT arg_HELP)
+  cmake_parse_arguments(PARSE_ARGV 4 arg "ADVANCED" "" "VALUES")
+  set(CACHE{${arg_NAME}} TYPE ${arg_TYPE} HELP ${arg_HELP} VALUE ${arg_DEFAULT})
+  if(arg_VALUES)
+    set_property(CACHE ${arg_NAME} PROPERTY STRINGS ${arg_VALUES})
+  endif()
+  if(arg_ADVANCED)
+    mark_as_advanced(${arg_NAME})
+  endif()
+endfunction()
+
+# vim:ft=cmake:
